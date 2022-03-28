@@ -15,6 +15,7 @@ module.exports = class FileHelper {
   //region private attributes
 
   #lines;
+  #dirName;
   #fullPath;
 
   //endregion
@@ -26,6 +27,7 @@ module.exports = class FileHelper {
    * @throw {FileNotFoundException} - If the full path doesn't exist
    */
   constructor(path, name) {
+    this.#dirName = path;
     this.#fullPath = `${path}/${name}`;
 
     if (!fs.existsSync(this.#fullPath)) {
@@ -65,6 +67,13 @@ module.exports = class FileHelper {
    * @param {number} fileSize
    */
   split(fileSize) {
-    throw new Error('Not implemented');
+    const fileNumber = Math.ceil(this.#lines.length / fileSize);
+    for (let i = 0; i < fileNumber; i++) {
+      const fileName = `Split${i + 1}.csv`;
+      const fileContent = this.#lines.slice(i * fileSize, (i + 1) * fileSize);
+      fs.writeFileSync(`${this.#dirName}/${fileName}`, fileContent.join('\n'),
+          'utf8');
+    }
+    fs.unlinkSync(this.#fullPath);
   }
 };

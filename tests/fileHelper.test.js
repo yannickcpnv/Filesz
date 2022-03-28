@@ -9,7 +9,6 @@
 'use strict';
 
 const fs = require('fs');
-const pathJs = require('path');
 const FileHelper = require('../src/FileHelper');
 const FileEmptyException = require('../src/EmptyFileException');
 const FileNotFoundException = require('../src/FileNotFoundException');
@@ -94,15 +93,16 @@ describe('FileHelper', () => {
 
     //when
     fileHelper.split(expectedLinesPerFiles);
-    const liftOfFilesResult = fs.readdirSync(path);
+    const liftOfFilesResult = fs.readdirSync(path).
+        filter(fn => fn.endsWith('.csv'));
 
     //then
-    expect(expectedAmountOfResultFiles).toEqual(liftOfFilesResult);
+    expect(expectedAmountOfResultFiles).toEqual(liftOfFilesResult.length);
   });
 
   afterEach(() => {
     fs.readdirSync(__dirname).
-        filter(file => pathJs.extname(file) === '.csv').
+        filter(file => file.endsWith('.csv')).
         forEach(file => fs.unlinkSync(path + '/' + file));
   });
 });
