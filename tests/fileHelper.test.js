@@ -66,7 +66,7 @@ describe('FileHelper', () => {
   test('Constructor_FileEmpty_ThrowException', () => {
     //given
     //refer to Init() method
-    new FileHelper(path, fileName);
+    fileHelper = new FileHelper(path, fileName);
 
     //when
     expect(() => {

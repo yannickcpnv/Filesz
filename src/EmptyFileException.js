@@ -1,4 +1,4 @@
 const FileHelperException = require('./FileHelperException');
 
-module.exports = class FileEmptyException extends FileHelperException {
+module.exports = class EmptyFileException extends FileHelperException {
 };
