@@ -1,6 +1,7 @@
 /**
  * @file      fileHelper.test.js
- * @brief     This class is designed to test the behaviour of {@link FileHelper}.
+ * @brief     This class is designed to test the behaviour of {@link
+    *     FileHelper}.
  * @author    Created by Yannick.BAUDRAZ
  * @version   28-MAR-2022 - original
  */
@@ -8,10 +9,10 @@
 'use strict';
 
 const fs = require('fs');
+const pathJs = require('path');
 const FileHelper = require('../src/FileHelper');
 const FileEmptyException = require('../src/EmptyFileException');
 const FileNotFoundException = require('../src/FileNotFoundException');
-const assert = require('assert');
 
 describe('FileHelper', () => {
   //region private attributs
@@ -35,11 +36,9 @@ describe('FileHelper', () => {
     //given
     //refer to Init() method
     const expectedAmountOfLines = 20;
-    const file = fs.createWriteStream(path + '/' + fileName);
     for (let i = 0; i < expectedAmountOfLines; i++) {
-      file.write(`${i}\n`);
+      fs.appendFileSync(path + '/' + fileName, `${i}\n`);
     }
-    file.close();
     fileHelper = new FileHelper(path, fileName);
     fileHelper.extractFileContent();
 
@@ -83,14 +82,12 @@ describe('FileHelper', () => {
     //refer to Init()
     const amountOfLinesInOriginalFile = 400;
     const expectedAmountOfResultFiles = 2;
-    const expectedLinesPerFiles = amountOfLinesInOriginalFile
-        / expectedAmountOfResultFiles;
-    const file = fs.createWriteStream(path + '/' + fileName);
+    const expectedLinesPerFiles = amountOfLinesInOriginalFile /
+        expectedAmountOfResultFiles;
 
     for (let i = 0; i < amountOfLinesInOriginalFile; i++) {
-      file.write(`${i}\n`);
+      fs.appendFileSync(path + '/' + fileName, `${i}\n`);
     }
-    file.close();
 
     fileHelper = new FileHelper(path, fileName);
     fileHelper.extractFileContent();
@@ -104,10 +101,8 @@ describe('FileHelper', () => {
   });
 
   afterEach(() => {
-    fs.readdirSync(__dirname).forEach(file => {
-      if (file.includes('.csv')) {
-        fs.unlinkSync(__dirname + '/' + file);
-      }
-    });
+    fs.readdirSync(__dirname).
+        filter(file => pathJs.extname(file) === '.csv').
+        forEach(file => fs.unlinkSync(path + '/' + file));
   });
 });
