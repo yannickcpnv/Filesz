@@ -1,6 +1,6 @@
 /**
  * @file      FileHelper.js
- * @brief     This class is designed to manage a file.
+ * @description     This class is designed to manage a file.
  * @author    Created by Yannick.BAUDRAZ
  * @version   28-MAR-2022 - original
  */
@@ -10,6 +10,7 @@
 const fs = require('fs');
 const FileNotFoundException = require('./FileNotFoundException');
 const EmptyFileException = require('./EmptyFileException');
+const _ = require('lodash');
 
 module.exports = class FileHelper {
   //region private attributes
@@ -19,6 +20,8 @@ module.exports = class FileHelper {
   #fullPath;
 
   //endregion
+
+  //region public methods
 
   /**
    * @description This methods constructs an instance of the FileHelper class.
@@ -34,7 +37,7 @@ module.exports = class FileHelper {
       throw new FileNotFoundException(this.#fullPath);
     }
 
-    this.#lines = fs.readFileSync(this.#fullPath, 'utf8').split('\n');
+    this.#lines = this.#readFileContent().split('\n');
   }
 
   /**
@@ -53,7 +56,7 @@ module.exports = class FileHelper {
    * @throw {EmptyFileException} - If the file is empty.
    */
   extractFileContent() {
-    const file = fs.readFileSync(this.#fullPath, 'utf8');
+    const file = this.#readFileContent();
     if (!file.length) {
       throw new EmptyFileException();
     }
@@ -67,13 +70,32 @@ module.exports = class FileHelper {
    * @param {number} fileSize
    */
   split(fileSize) {
-    const fileNumber = Math.ceil(this.#lines.length / fileSize);
-    for (let i = 0; i < fileNumber; i++) {
-      const fileName = `Split${i + 1}.csv`;
-      const fileContent = this.#lines.slice(i * fileSize, (i + 1) * fileSize);
-      fs.writeFileSync(`${this.#dirName}/${fileName}`, fileContent.join('\n'),
-          'utf8');
-    }
+    this.#createSplitFiles(fileSize);
+    this.#deleteOriginalFile();
+  }
+
+  //endregion
+
+  //region private methods
+
+  #readFileContent() {
+    return fs.readFileSync(this.#fullPath, 'utf8');
+  }
+
+  /**
+   * @param {number} fileSize
+   */
+  #createSplitFiles(fileSize) {
+    const files = _.chunk(this.#lines, fileSize);
+    files.forEach((lines, index) => {
+      const fileName = `${this.#dirName}/Split${index + 1}.csv`;
+      fs.writeFileSync(fileName, lines.join('\n'));
+    });
+  }
+
+  #deleteOriginalFile() {
     fs.unlinkSync(this.#fullPath);
   }
+
+  //endregion
 };
