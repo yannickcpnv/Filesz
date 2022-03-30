@@ -1,6 +1,6 @@
 {
   "name": "filesz",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Lab for convert a CSharp test class into a NodeJs one and code it.",
   "main": "index.js",
   "scripts": {
