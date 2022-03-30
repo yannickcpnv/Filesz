@@ -10,14 +10,16 @@ class FileHelper {
 }
 
 class Error
+class FileHelperException
 class FileNotFoundException
 class EmptyFileException
 
 FileHelper ..> FileNotFoundException : throw
 FileHelper ..> EmptyFileException : throw
 
-FileNotFoundException --|> Error
-EmptyFileException --|> Error
+FileNotFoundException --|> FileHelperException
+EmptyFileException --|> FileHelperException
+FileHelperException --|> Error
 
 note as N1 #lightyellow
   Title : Class Diagram
