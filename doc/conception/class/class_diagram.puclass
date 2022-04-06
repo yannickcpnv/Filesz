@@ -3,21 +3,23 @@ skinparam classAttributeIconSize 0
 hide empty members
 
 class FileHelper {
-  + <get> lines: string[]
+  + <<get>> lines(): string[]
   + FileHelper(path: string, fileName: string)
   + ExtractFileContent(): void
   + Split(linesNumber: int): void
 }
 
 class Error
+class FileHelperException
 class FileNotFoundException
 class EmptyFileException
 
 FileHelper ..> FileNotFoundException : throw
 FileHelper ..> EmptyFileException : throw
 
-FileNotFoundException --|> Error
-EmptyFileException --|> Error
+FileNotFoundException --|> FileHelperException
+EmptyFileException --|> FileHelperException
+FileHelperException --|> Error
 
 note as N1 #lightyellow
   Title : Class Diagram
