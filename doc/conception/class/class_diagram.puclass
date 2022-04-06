@@ -3,7 +3,7 @@ skinparam classAttributeIconSize 0
 hide empty members
 
 class FileHelper {
-  + <get> lines: string[]
+  + <<get>> lines(): string[]
   + FileHelper(path: string, fileName: string)
   + ExtractFileContent(): void
   + Split(linesNumber: int): void
